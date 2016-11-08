@@ -9,7 +9,6 @@ import services.DerivationsService
 
 //scalastyle:off public.methods.have.type
 
-@Singleton
 class DerivationsController @Inject() (derivationsService: DerivationsService) extends Controller {
 
   def list = Action {

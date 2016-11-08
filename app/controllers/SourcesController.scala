@@ -14,7 +14,6 @@ import scala.io.Source
 
 //scalastyle:off public.methods.have.type
 
-@Singleton
 class SourcesController @Inject() (configuration: Configuration, environment: Environment, derivationsService: DerivationsService) extends Controller {
 
   private val sourceRoot = configuration.getString("sources.root").getOrElse("/public/sources/")

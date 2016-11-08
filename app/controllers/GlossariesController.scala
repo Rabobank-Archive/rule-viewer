@@ -13,7 +13,6 @@ import scala.reflect.ClassTag
 
 //scalastyle:off public.methods.have.type
 
-@Singleton
 class GlossariesController @Inject() (glossariesService: GlossariesService) extends Controller {
 
   private val glossariesToExpose: Map[String, Map[String, Fact[Any]]] = glossariesService.glossaries.mapValues( g => g.facts )
