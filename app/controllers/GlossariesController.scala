@@ -21,6 +21,10 @@ class GlossariesController @Inject() (glossariesService: GlossariesService) exte
     Ok(Json.toJson(glossariesToExpose))
   )
 
+  def mergedGlossaries = Action(
+    Ok(Json.toJson(glossariesService.mergedGlossaries))
+  )
+
   def byId(id: String) = Action(
     glossariesToExpose.get(id).map( Json.toJson(_) ).map( Ok(_) ).getOrElse( NotFound("Element not found") )
   )

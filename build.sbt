@@ -30,7 +30,7 @@ lazy val ruleViewer = (project in file("."))
 // *** Dependencies ***
 
 lazy val scalaRulesVersion = "0.3.4"
-lazy val scalaTestVersion = "2.2.5"
+lazy val scalaTestVersion = "3.0.0"
 lazy val jodaTimeVersion = "2.4"
 lazy val jodaConvertVersion = "1.8"
 
