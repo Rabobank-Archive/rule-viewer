@@ -3,6 +3,7 @@ package controllers.conversion
 import org.scalarules.engine._
 import org.scalarules.finance.nl._
 import play.api.libs.json._
+import ImplicitConversions._
 
 import scala.annotation.tailrec
 
