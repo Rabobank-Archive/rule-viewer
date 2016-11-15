@@ -9,17 +9,17 @@ import scala.annotation.tailrec
 object InputConverter {
 
   def convertToFactsAndAddToContext(inputJsValue: JsValue, factMap: Map[String, Fact[Any]]): (Context, List[String]) = {
-    val newStuff: List[(String, JsValue)] = (inputJsValue match {
+    val possibleFacts: List[(String, JsValue)] = (inputJsValue match {
       case c: JsObject => c.fields.toMap
-      case o: Any => ???
+      case o: Any => throw new IllegalArgumentException
     }).toList
 
     @tailrec
-    def findFactInGlossaryAndAddToContext(contextList: List[(String, JsValue)], context: Context, missingFacts: List[String]): (Context, List[String]) = contextList match {
-      case Nil => (context, missingFacts)
+    def findFactInGlossaryAndAddToContext(possibleFacts: List[(String, JsValue)], initialContext: Context, missingFacts: List[String]): (Context, List[String]) = possibleFacts match {
+      case Nil => (initialContext, missingFacts)
       case (factName, factValue) :: tail => factMap.get(factName) match {
-        case Some(fact) => findFactInGlossaryAndAddToContext(tail, context ++ convertFactToContext(fact, factValue), missingFacts)
-        case None => findFactInGlossaryAndAddToContext(tail, context, factName :: missingFacts)
+        case Some(fact) => findFactInGlossaryAndAddToContext(tail, initialContext ++ convertFactToContext(fact, factValue), missingFacts)
+        case None => findFactInGlossaryAndAddToContext(tail, initialContext, factName :: missingFacts)
       }
     }
 
@@ -30,7 +30,7 @@ object InputConverter {
       case ("BigDecimal", factValue: JsValue) if Json.fromJson[BigDecimal](factValue).isSuccess => Map(fact -> Json.fromJson[BigDecimal](factValue).get)
       case other: Any => throw new IllegalArgumentException("Apparently we didn't implement conversion for type " + other + " or it was in an illegal format")
     }
-    findFactInGlossaryAndAddToContext(newStuff, Map.empty[Fact[Any], Any], List.empty[String])
+    findFactInGlossaryAndAddToContext(possibleFacts, Map.empty[Fact[Any], Any], List.empty[String])
   }
 }
 
