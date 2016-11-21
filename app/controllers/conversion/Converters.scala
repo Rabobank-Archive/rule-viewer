@@ -6,7 +6,6 @@ import play.api.data.validation.ValidationError
 import play.api.libs.json._
 import controllers.conversion.ImplicitConversions._
 
-import controllers.ConvertFunc
 import scala.annotation.tailrec
 
 object InputConverter {
@@ -16,33 +15,10 @@ object InputConverter {
       case o: Any => List(JsError(ValidationError("No JsValues other than JsObject are allowed!", inputJsValue)))
     }
 
-    val finish : List[JsSuccess[Context]] = jsResults.collect{ case succes: JsSuccess[Context] => succes }
-    val him: List[JsError] = jsResults.collect{ case error: JsError => error }
+    val successes : List[JsSuccess[Context]] = jsResults.collect{ case succes: JsSuccess[Context] => succes }
+    val errors: List[JsError] = jsResults.collect{ case error: JsError => error }
 
-    (finish, him)
-  }
-  def convertToFactsAndAddToContext(inputJsValue: JsValue, factMap: Map[String, Fact[Any]], conversionTypesMap: Map[String, ConvertFunc]): (Context, List[String]) = {
-    val possibleFacts: List[(String, JsValue)] = (inputJsValue match {
-      case c: JsObject => c.fields.toMap
-      case o: Any => throw new IllegalArgumentException
-    }).toList
-
-    @tailrec
-    def findFactInGlossaryAndAddToContext(possibleFacts: List[(String, JsValue)], initialContext: Context, missingFacts: List[String]): (Context, List[String]) = possibleFacts match {
-      case Nil => (initialContext, missingFacts)
-      case (factName, factValue) :: tail => factMap.get(factName) match {
-        case Some(fact) => findFactInGlossaryAndAddToContext(tail, initialContext ++ convertFactToContext(fact, factValue), missingFacts)
-        case None => findFactInGlossaryAndAddToContext(tail, initialContext, factName :: missingFacts)
-      }
-    }
-
-    def convertFactToContext(fact: Fact[Any], factValue: JsValue): Context = {
-      conversionTypesMap.get(fact.valueType).get(fact, factValue) match {
-        case success: JsSuccess[Context] => success.get
-        case failure: JsError => throw new IllegalArgumentException(s"Unable to convert fact $fact.name with value $factValue to context")
-      }
-    }
-    findFactInGlossaryAndAddToContext(possibleFacts, Map.empty[Fact[Any], Any], List.empty[String])
+    (successes, errors)
   }
 }
 
