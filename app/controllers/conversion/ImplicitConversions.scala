@@ -35,9 +35,23 @@ object ImplicitConversions {
     }
   }
 
+  implicit object bedragReads extends Reads[Bedrag] {
+    def reads(jsValue: JsValue): JsResult[Bedrag] = jsValue match {
+      case jsNumber: JsNumber => JsSuccess(jsNumber.value.euro)
+      case other: Any => JsError(ValidationError("error.invalid.bedrag", other))
+    }
+  }
+
   implicit object bedragWrites extends Writes[Bedrag] {
     def writes(bedrag: Bedrag): JsValue = {
       Json.toJson(bedrag.waarde)
+    }
+  }
+
+  implicit object percentageReads extends Reads[Percentage] {
+    def reads(jsValue: JsValue): JsResult[Percentage] = jsValue match {
+      case jsNumber: JsNumber => JsSuccess(jsNumber.value.procent)
+      case other: Any => JsError(ValidationError("error.invalid.percentage", other))
     }
   }
 
