@@ -1,6 +1,6 @@
 package controllers.conversion
 
-import controllers.ConvertFunc
+import controllers._
 import org.scalarules.engine.Fact
 import org.scalarules.engine.Context
 import org.scalarules.finance.nl._
@@ -11,11 +11,19 @@ import scala.annotation.tailrec
 
 object ImplicitConversions {
 
-  object factFormat extends {
-    def writes(fact: Fact[Bedrag], c: Context): JsValue = {
-      Json.toJson(fact.toEval.apply(c))
+  implicit object contextWrites extends Writes[Context] {
+    def writes(context: Context): JsValue = {
+      context.map{ case (fact:Fact[Any], factValue: Any) =>
+        CoMap.contextToJsonConversionMap.get(factValue.getClass.getTypeName) match {
+          case function: Some[ConvertBackFunc] => function.get(fact, factValue)
+          case None => throw new IllegalStateException(s"Unable to find suitable toJson conversion for Fact with name ${fact.name} " +
+            "with valuetype ${factValue.getClass.getTypeName} in factConversionMap")
+        }
+      }.reduceLeft(_ ++ _)
     }
+  }
 
+  implicit object contextReads extends {
     def reads(jsObject: JsObject, possibleFacts: Map[String, Fact[Any]]): List[JsResult[Context]] = {
       val prospectiveFacts: List[(String, JsValue)] = jsObject.fields.toList
 
@@ -25,7 +33,8 @@ object ImplicitConversions {
         case ((factName: String, factValue: JsValue) :: tail) => possibleFacts.get(factName) match {
           case Some(fact) => CoMap.factConversionMap.get(fact.valueType) match {
             case function: Some[ConvertFunc] => inner(tail, function.get(fact, factValue) :: resultList)
-            case None => inner(tail, JsError(ValidationError(s"Unable to find suitable fromJson conversion for Fact with name $factName with type ${fact.valueType} in factConversionMap", factValue)) :: resultList)
+            case None => inner(tail, JsError(ValidationError(s"Unable to find suitable fromJson conversion for Fact with name $factName with type ${fact.valueType} in factConversionMap",
+                                factValue)) :: resultList)
           }
           case None => inner(tail, JsError(ValidationError(s"Unable to find Fact with name $factName in the Glossary", factValue)) :: resultList)
         }
