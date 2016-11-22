@@ -16,8 +16,8 @@ object ImplicitConversions {
       context.map{ case (fact:Fact[Any], factValue: Any) =>
         CoMap.contextToJsonConversionMap.get(factValue.getClass.getTypeName) match {
           case function: Some[ConvertBackFunc] => function.get(fact, factValue)
-          case None => throw new IllegalStateException(s"Unable to find suitable toJson conversion for Fact with name ${fact.name} " +
-            "with valuetype ${factValue.getClass.getTypeName} in factConversionMap")
+          case None => throw new IllegalStateException(s"Unable to find suitable toJson conversion for Fact with name ${fact.name} with " +
+                                                        s"valuetype ${factValue.getClass.getTypeName} in factConversionMap")
         }
       }.reduceLeft(_ ++ _)
     }
