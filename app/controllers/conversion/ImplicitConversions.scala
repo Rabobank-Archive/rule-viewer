@@ -14,7 +14,7 @@ object ImplicitConversions {
   implicit object contextWrites extends Writes[Context] {
     def writes(context: Context): JsValue = {
       context.map{ case (fact:Fact[Any], factValue: Any) =>
-        CoMap.contextToJsonConversionMap.get(factValue.getClass.getTypeName) match {
+        JsonConversion.contextToJsonConversionMap.get(factValue.getClass.getTypeName) match {
           case function: Some[ConvertBackFunc] => function.get(fact, factValue)
           case None => throw new IllegalStateException(s"Unable to find suitable toJson conversion for Fact with name ${fact.name} with " +
                                                         s"valuetype ${factValue.getClass.getTypeName} in factConversionMap")
@@ -31,7 +31,7 @@ object ImplicitConversions {
       def inner(list: List[(String, JsValue)], resultList: List[JsResult[Context]]): List[JsResult[Context]] = list match {
         case Nil => resultList
         case ((factName: String, factValue: JsValue) :: tail) => possibleFacts.get(factName) match {
-          case Some(fact) => CoMap.factConversionMap.get(fact.valueType) match {
+          case Some(fact) => JsonConversion.jsonToFactConversionMap.get(fact.valueType) match {
             case function: Some[ConvertFunc] => inner(tail, function.get(fact, factValue) :: resultList)
             case None => inner(tail, JsError(ValidationError(s"Unable to find suitable fromJson conversion for Fact with name $factName with type ${fact.valueType} in factConversionMap",
                                 factValue)) :: resultList)
