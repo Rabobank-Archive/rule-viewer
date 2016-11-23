@@ -4,6 +4,7 @@ import java.net.{URL, URLClassLoader}
 import java.util.jar.{JarEntry, JarFile}
 import javax.inject.{Inject, Singleton}
 
+import controllers.conversion.JsonConversionsProvider
 import org.scalarules.dsl.nl.grammar.Berekening
 import org.scalarules.utils.Glossary
 import play.api.Configuration
@@ -47,11 +48,13 @@ class JarLoaderService @Inject() (configuration: Configuration) {
 
     val triedGlossaries: List[Try[Glossary]] = scanAndLoadClasses(jarClassEntries, new GlossaryClassLoader, cl, mirror)
     val triedDerivations: List[Try[Berekening]] = scanAndLoadClasses(jarClassEntries, new DerivationClassLoader, cl, mirror)
+    val triedJsonConversionsProviders: List[Try[JsonConversionsProvider]] = scanAndLoadClasses(jarClassEntries, new JsonConversionMapClassLoader, cl, mirror)
 
     JarLoadingResults(
       jarName = location,
       glossaries = triedGlossaries.collect { case Success(glossary) => glossary },
-      derivations = triedDerivations.collect { case Success(derivation) => derivation }
+      derivations = triedDerivations.collect { case Success(derivation) => derivation },
+      jsonConversionsProviders = triedJsonConversionsProviders.collect { case Success(jsonConversionsProvider) => jsonConversionsProvider }
     )
   })
 
@@ -71,7 +74,7 @@ object JarLoaderService {
   val CLASS_FILE_SUFFIX = ".class"
 }
 
-case class JarLoadingResults(jarName: String, glossaries: List[Glossary], derivations: List[Berekening])
+case class JarLoadingResults(jarName: String, glossaries: List[Glossary], derivations: List[Berekening], jsonConversionsProviders: List[JsonConversionsProvider])
 
 /**
   * Implementations of this trait are used by the JarLoaderService to identify and load certain classes and objects from
@@ -150,6 +153,25 @@ class DerivationClassLoader extends SpecializedClassLoader[Berekening] {
     val constructorMirror: MethodMirror = classMirror.reflectConstructor(constructor)
 
     constructorMirror().asInstanceOf[Berekening]
+  })
+}
+
+/**
+  * Processes JAR-entries looking for objects extending JsonConversionMap, which we will instantiate.
+  */
+class JsonConversionMapClassLoader extends SpecializedClassLoader[JsonConversionsProvider] {
+  // Note: since Glossaries are objects, we should only consider classes ending with a $, as per the Scala compiler's naming convention
+  override def precondition(className: String): Boolean = className.endsWith("$")
+
+  // Note: the dropRight(1) ensures the $-sign at the end of the name is removed. The Scala mirror will have no clue what to with the $ and simply requires the name of the object.
+  override def preprocessClassName(className: String): String = className.dropRight(1)
+
+  override def load(className: String, mirror: _root_.scala.reflect.runtime.universe.Mirror): Try[JsonConversionsProvider] = Try({
+    val jsonConversionsProviderModule: ModuleSymbol = mirror.staticModule(className).asModule
+
+    val modMirror: ModuleMirror = mirror.reflectModule(jsonConversionsProviderModule)
+
+    modMirror.instance.asInstanceOf[JsonConversionsProvider]
   })
 }
 

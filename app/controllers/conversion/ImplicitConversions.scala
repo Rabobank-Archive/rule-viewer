@@ -11,10 +11,10 @@ import scala.annotation.tailrec
 
 object ImplicitConversions {
 
-  implicit object contextWrites extends Writes[Context] {
-    def writes(context: Context): JsValue = {
+  implicit object contextWrites {
+    def writes(context: Context, conversionMap: JsonConversionsProvider): JsValue = {
       context.map{ case (fact:Fact[Any], factValue: Any) =>
-        JsonConversion.contextToJsonConversionMap.get(factValue.getClass.getTypeName) match {
+        conversionMap.contextToJsonConversions.get(factValue.getClass.getTypeName) match {
           case function: Some[ConvertBackFunc] => function.get(fact, factValue)
           case None => throw new IllegalStateException(s"Unable to find suitable toJson conversion for Fact with name ${fact.name} with " +
                                                         s"valuetype ${factValue.getClass.getTypeName} in factConversionMap")
@@ -23,16 +23,21 @@ object ImplicitConversions {
     }
   }
 
-  implicit object contextReads extends {
-    def reads(jsObject: JsObject, possibleFacts: Map[String, Fact[Any]]): List[JsResult[Context]] = {
+  implicit object contextReads {
+    def reads(jsObject: JsObject, possibleFacts: Map[String, Fact[Any]], conversionMap: JsonConversionsProvider): List[JsResult[Context]] = {
       val prospectiveFacts: List[(String, JsValue)] = jsObject.fields.toList
+
+      def jsResultFactToContext(fact: Fact[Any], jsResult: JsResult[Any]): JsResult[Context] = jsResult match {
+        case success: JsSuccess[Fact[Any]] => JsSuccess(Map(fact -> success.get))
+        case error: JsError => error
+      }
 
       @tailrec
       def inner(list: List[(String, JsValue)], resultList: List[JsResult[Context]]): List[JsResult[Context]] = list match {
         case Nil => resultList
         case ((factName: String, factValue: JsValue) :: tail) => possibleFacts.get(factName) match {
-          case Some(fact) => JsonConversion.jsonToFactConversionMap.get(fact.valueType) match {
-            case function: Some[ConvertFunc] => inner(tail, function.get(fact, factValue) :: resultList)
+          case Some(fact) => conversionMap.jsonToFactConversions.get(fact.valueType) match {
+            case function: Some[ConvertFunc] => inner(tail, jsResultFactToContext(fact, function.get(fact, factValue)) :: resultList)
             case None => inner(tail, JsError(ValidationError(s"Unable to find suitable fromJson conversion for Fact with name $factName with type ${fact.valueType} in factConversionMap",
                                 factValue)) :: resultList)
           }

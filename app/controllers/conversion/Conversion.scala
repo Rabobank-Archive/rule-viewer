@@ -1,20 +1,20 @@
 package controllers.conversion
 
 import controllers._
-import org.scalarules.engine.{Context,Fact}
+import controllers.conversion.ImplicitConversions._
+import org.scalarules.engine.Fact
 import org.scalarules.finance.nl._
 import play.api.data.validation.ValidationError
 import play.api.libs.json._
-import ImplicitConversions._
 
-trait JsonConversionMap {
-  def jsonToFactConversionMap: Map[String, (Fact[Any], JsValue) => JsResult[Context]]
-  def contextToJsonConversionMap: Map[String, (Fact[Any], Any) => JsObject]
+trait JsonConversionsProvider {
+  def jsonToFactConversions: Map[String, ConvertFunc]
+  def contextToJsonConversions: Map[String, (Fact[Any], Any) => JsObject]
 }
 
-object JsonConversion extends JsonConversionMap {
-  override def contextToJsonConversionMap: Map[String, ConvertBackFunc] = ContextToJsonConversionMap.contextToJsonConversionMap
-  override def jsonToFactConversionMap: Map[String, ConvertFunc] = JsonToFactConversionMap.jsonToFactConversionMap
+object DefaultJsonConversion extends JsonConversionsProvider {
+  override def contextToJsonConversions: Map[String, ConvertBackFunc] = ContextToJsonConversionMap.contextToJsonConversionMap
+  override def jsonToFactConversions: Map[String, ConvertFunc] = JsonToFactConversionMap.jsonToFactConversionMap
 
   object ContextToJsonConversionMap {
     def contextToJsonConversionMap: Map[String, ConvertBackFunc] = Map[String, ConvertBackFunc](
@@ -49,37 +49,33 @@ object JsonConversion extends JsonConversionMap {
   }
 
   object JsonToFactConversionMap {
-    def jsonToFactConversionMap: Map[String, ConvertFunc] =   Map[String, ConvertFunc](
+    def jsonToFactConversionMap: Map[String, ConvertFunc] = Map[String, ConvertFunc](
       "String" -> { stringFunct(_, _) },
-      "org.scalarules.finance.nl.Bedrag" -> { bedragFunct(_, _, jsResultToContext)},
-      "org.scalarules.finance.nl.Percentage" -> { percentageFunct(_, _, jsResultToContext)},
+      "org.scalarules.finance.nl.Bedrag" -> { bedragFunct(_, _) },
+      "org.scalarules.finance.nl.Percentage" -> { percentageFunct(_, _) },
       "BigDecimal" -> { bigDecimalFunct(_, _) }
     )
 
-    private def stringFunct(fact: Fact[Any], factValue: JsValue): JsResult[Context] = factValue match {
-      case jsString: JsString => JsSuccess(Map(fact -> jsString.value))
+    private def stringFunct(fact: Fact[Any], factValue: JsValue): JsResult[String] = factValue match {
+      case jsString: JsString => JsSuccess(jsString.value)
       case _ => JsError(ValidationError(s"Conversion for String fact ${fact.name} failed, corresponding value was not of expected type JsString"))
     }
 
-    private def bigDecimalFunct(fact: Fact[Any], factValue: JsValue): JsResult[Context] = factValue match {
-      case jsNumber: JsNumber => JsSuccess(Map(fact -> jsNumber.value))
+    private def bigDecimalFunct(fact: Fact[Any], factValue: JsValue): JsResult[BigDecimal] = factValue match {
+      case jsNumber: JsNumber => JsSuccess(jsNumber.value)
       case _ => JsError(ValidationError(s"Conversion for BigDecimal fact ${fact.name} failed, corresponding value was not of expected type JsNumber"))
     }
 
-    private def bedragFunct(fact: Fact[Any], factValue: JsValue, f: (Fact[Any], JsResult[Any]) => JsResult[Context]): JsResult[Context] = factValue match {
-      case jsNumber: JsNumber => f(fact, Json.fromJson[Bedrag](jsNumber))
+    private def bedragFunct(fact: Fact[Any], factValue: JsValue): JsResult[Bedrag] = factValue match {
+      case jsNumber: JsNumber => Json.fromJson[Bedrag](jsNumber)
       case _ => JsError(ValidationError(s"Conversion for Bedrag fact ${fact.name} failed, corresponding value was not of expected type JsNumber"))
     }
 
-    private def percentageFunct(fact: Fact[Any], factValue: JsValue, f: (Fact[Any], JsResult[Any]) => JsResult[Context]): JsResult[Context] = factValue match {
-      case jsNumber: JsNumber => f(fact, Json.fromJson[Percentage](jsNumber))
+    private def percentageFunct(fact: Fact[Any], factValue: JsValue): JsResult[Percentage] = factValue match {
+      case jsNumber: JsNumber => Json.fromJson[Percentage](jsNumber)
       case _ => JsError(ValidationError(s"Conversion for Percentage fact ${fact.name} failed, corresponding value was not of expected type JsNumber"))
     }
 
-    private def jsResultToContext(fact: Fact[Any], jsResult: JsResult[Any]): JsResult[Context] = jsResult match {
-      case success: JsSuccess[Any] => JsSuccess(Map(fact -> success.get))
-      case error: JsError => error
-    }
   }
 
 }
