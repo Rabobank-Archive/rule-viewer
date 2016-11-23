@@ -14,6 +14,17 @@ class RestController @Inject() (derivationsService: DerivationsService, glossari
 
   val jsonConversionMap: JsonConversionsProvider = jsonConversionMapsService.mergedJsonConversionMap
 
+  /**
+    * Provides a REST endpoint for triggering all derivations in the target project. Any fact definitions available in the target project's glossaries
+    * can be provided in the JSON request body like so:
+    * {
+    *   "factOfTypeString": "factText",
+    *   "factOfTypeBedrag": 234,
+    *   "factOfTypeBigDecimal": 234,
+    *   "factOfTypePercentage": 234
+    * }
+    * @return A JsonObject containing all the facts available in the context, including the originally provided facts and their values.
+    */
   def runAll = Action(parse.json) { request =>
     val (initialContextFragments: List[JsSuccess[Context]], conversionErrors: List[JsError]) =
       Converter.convertToIndividualContext(request.body, glossariesService.mergedGlossaries, jsonConversionMap)

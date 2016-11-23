@@ -12,6 +12,14 @@ import scala.annotation.tailrec
 object ImplicitConversions {
 
   implicit object contextWrites {
+    /**
+      * Writes a context to a JsonObject containing all existing facts and their corresponding values,
+      * using a conversionMap that provides a function how to unwrap facts from a given type.
+      *
+      * @param context
+      * @param conversionMap
+      * @return a Json Object containing all existing facts and their corresponding values
+      */
     def writes(context: Context, conversionMap: JsonConversionsProvider): JsValue = {
       context.map{ case (fact:Fact[Any], factValue: Any) =>
         conversionMap.contextToJsonConversions.get(factValue.getClass.getTypeName) match {
@@ -28,7 +36,7 @@ object ImplicitConversions {
       val prospectiveFacts: List[(String, JsValue)] = jsObject.fields.toList
 
       def jsResultFactToContext(fact: Fact[Any], jsResult: JsResult[Any]): JsResult[Context] = jsResult match {
-        case success: JsSuccess[Fact[Any]] => JsSuccess(Map(fact -> success.get))
+        case success: JsSuccess[Any] => JsSuccess(Map(fact -> success.get))
         case error: JsError => error
       }
 

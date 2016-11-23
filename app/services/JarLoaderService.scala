@@ -157,7 +157,7 @@ class DerivationClassLoader extends SpecializedClassLoader[Berekening] {
 }
 
 /**
-  * Processes JAR-entries looking for objects extending JsonConversionMap, which we will instantiate.
+  * Processes JAR-entries looking for objects extending JsonConversionMap.
   */
 class JsonConversionMapClassLoader extends SpecializedClassLoader[JsonConversionsProvider] {
   // Note: since Glossaries are objects, we should only consider classes ending with a $, as per the Scala compiler's naming convention
