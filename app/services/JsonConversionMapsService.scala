@@ -2,7 +2,7 @@ package services
 
 import javax.inject.{Inject, Singleton}
 
-import controllers.ConvertToFunc
+import controllers.conversion.ConvertToFunc
 import controllers.conversion.{DefaultJsonConversion, JsonConversionsProvider}
 import org.scalarules.engine._
 import play.api.Configuration

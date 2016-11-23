@@ -1,6 +1,5 @@
 package controllers.conversion
 
-import controllers._
 import controllers.conversion.ImplicitConversions._
 import org.scalarules.engine.Fact
 import org.scalarules.finance.nl._
