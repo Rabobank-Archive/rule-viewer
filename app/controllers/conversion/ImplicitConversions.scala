@@ -21,7 +21,7 @@ object ImplicitConversions {
       */
     def writes(context: Context, conversionMap: JsonConversionsProvider): JsValue = {
       context.map{ case (fact:Fact[Any], factValue: Any) =>
-        conversionMap.contextToJsonConversions.get(factValue.getClass.getTypeName) match {
+        conversionMap.contextToJsonConversions.get(factValue.getClass) match {
           case function: Some[ConvertBackFunc] => function.get(fact, factValue)
           case None => throw new IllegalStateException(s"Unable to find suitable toJson conversion for Fact with name ${fact.name} with " +
                                                         s"valuetype ${factValue.getClass.getTypeName} in factConversionMap")

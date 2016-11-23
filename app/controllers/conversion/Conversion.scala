@@ -7,22 +7,20 @@ import play.api.data.validation.ValidationError
 import play.api.libs.json._
 
 trait JsonConversionsProvider {
+  def contextToJsonConversions: Map[Class[_], (Fact[Any], Any) => JsObject]
   def jsonToFactConversions: Map[String, ConvertToFunc]
-  def contextToJsonConversions: Map[String, (Fact[Any], Any) => JsObject]
 }
 
 object DefaultJsonConversion extends JsonConversionsProvider {
-  override def contextToJsonConversions: Map[String, ConvertBackFunc] = ContextToJsonConversionMap.contextToJsonConversionMap
+  override def contextToJsonConversions: Map[Class[_], ConvertBackFunc] = ContextToJsonConversionMap.contextToJsonConversionMap
   override def jsonToFactConversions: Map[String, ConvertToFunc] = JsonToFactConversionMap.jsonToFactConversionMap
 
   object ContextToJsonConversionMap {
-    def contextToJsonConversionMap: Map[String, ConvertBackFunc] = Map[String, ConvertBackFunc](
-      //ToDo: Make this pretty somehow!
-      //Tried to do this not Stringly-typed, couldn't get it to work while still having the flexibility a Map provides regarding extension
-      "String" -> { contextStringToJsObject(_, _) },
-      "org.scalarules.finance.nl.Bedrag" -> { contextBedragToJsObject(_, _) },
-      "org.scalarules.finance.nl.Percentage" -> { contextPercentageToJsObject(_, _) },
-      "BigDecimal" -> { contextBigDecimalToJsObject(_, _) }
+    def contextToJsonConversionMap: Map[Class[_], ConvertBackFunc] = Map[Class[_], ConvertBackFunc](
+      classOf[String] -> { contextStringToJsObject(_, _) },
+      classOf[Bedrag] -> { contextBedragToJsObject(_, _) },
+      classOf[Percentage] -> { contextPercentageToJsObject(_, _) },
+      classOf[BigDecimal] -> { contextBigDecimalToJsObject(_, _) }
     )
 
     private def contextStringToJsObject(fact: Fact[Any], factValue: Any): JsObject = factValue match {

@@ -20,7 +20,7 @@ class JsonConversionMapsService @Inject()(configuration: Configuration, jarLoade
       case (_, map: JsonConversionsProvider) => map.jsonToFactConversions
     }
 
-    override def contextToJsonConversions: Map[String, (Fact[Any], Any) => JsObject] = DefaultJsonConversion.contextToJsonConversions ++ jsonConversionMaps.flatMap{
+    override def contextToJsonConversions: Map[Class[_], (Fact[Any], Any) => JsObject] = DefaultJsonConversion.contextToJsonConversions ++ jsonConversionMaps.flatMap{
       case (_, map: JsonConversionsProvider) => map.contextToJsonConversions
     }
   }
