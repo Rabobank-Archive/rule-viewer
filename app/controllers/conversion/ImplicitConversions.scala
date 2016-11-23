@@ -45,7 +45,7 @@ object ImplicitConversions {
         case Nil => resultList
         case ((factName: String, factValue: JsValue) :: tail) => possibleFacts.get(factName) match {
           case Some(fact) => conversionMap.jsonToFactConversions.get(fact.valueType) match {
-            case function: Some[ConvertFunc] => inner(tail, jsResultFactToContext(fact, function.get(fact, factValue)) :: resultList)
+            case function: Some[ConvertToFunc] => inner(tail, jsResultFactToContext(fact, function.get(fact, factValue)) :: resultList)
             case None => inner(tail, JsError(ValidationError(s"Unable to find suitable fromJson conversion for Fact with name $factName with type ${fact.valueType} in factConversionMap",
                                 factValue)) :: resultList)
           }

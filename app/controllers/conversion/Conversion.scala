@@ -8,13 +8,13 @@ import play.api.data.validation.ValidationError
 import play.api.libs.json._
 
 trait JsonConversionsProvider {
-  def jsonToFactConversions: Map[String, ConvertFunc]
+  def jsonToFactConversions: Map[String, ConvertToFunc]
   def contextToJsonConversions: Map[String, (Fact[Any], Any) => JsObject]
 }
 
 object DefaultJsonConversion extends JsonConversionsProvider {
   override def contextToJsonConversions: Map[String, ConvertBackFunc] = ContextToJsonConversionMap.contextToJsonConversionMap
-  override def jsonToFactConversions: Map[String, ConvertFunc] = JsonToFactConversionMap.jsonToFactConversionMap
+  override def jsonToFactConversions: Map[String, ConvertToFunc] = JsonToFactConversionMap.jsonToFactConversionMap
 
   object ContextToJsonConversionMap {
     def contextToJsonConversionMap: Map[String, ConvertBackFunc] = Map[String, ConvertBackFunc](
@@ -49,7 +49,7 @@ object DefaultJsonConversion extends JsonConversionsProvider {
   }
 
   object JsonToFactConversionMap {
-    def jsonToFactConversionMap: Map[String, ConvertFunc] = Map[String, ConvertFunc](
+    def jsonToFactConversionMap: Map[String, ConvertToFunc] = Map[String, ConvertToFunc](
       "String" -> { stringFunct(_, _) },
       "org.scalarules.finance.nl.Bedrag" -> { bedragFunct(_, _) },
       "org.scalarules.finance.nl.Percentage" -> { percentageFunct(_, _) },

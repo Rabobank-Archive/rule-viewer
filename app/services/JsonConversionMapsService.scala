@@ -2,7 +2,7 @@ package services
 
 import javax.inject.{Inject, Singleton}
 
-import controllers.ConvertFunc
+import controllers.ConvertToFunc
 import controllers.conversion.{DefaultJsonConversion, JsonConversionsProvider}
 import org.scalarules.engine._
 import play.api.Configuration
@@ -16,7 +16,7 @@ class JsonConversionMapsService @Inject()(configuration: Configuration, jarLoade
   })
 
   val mergedJsonConversionMap: JsonConversionsProvider = new JsonConversionsProvider {
-    override def jsonToFactConversions: Map[String, ConvertFunc] = DefaultJsonConversion.jsonToFactConversions ++ jsonConversionMaps.flatMap{
+    override def jsonToFactConversions: Map[String, ConvertToFunc] = DefaultJsonConversion.jsonToFactConversions ++ jsonConversionMaps.flatMap{
       case (_, map: JsonConversionsProvider) => map.jsonToFactConversions
     }
 
