@@ -16,7 +16,7 @@ object DefaultJsonConversion extends JsonConversionsProvider {
   override def jsonToFactConversions: Map[String, ConvertToFunc] = JsonToFactConversionMap.jsonToFactConversionMap
 
   object ContextToJsonConversionMap {
-    def contextToJsonConversionMap: Map[Class[_], ConvertBackFunc] = Map[Class[_], ConvertBackFunc](
+    val contextToJsonConversionMap: Map[Class[_], ConvertBackFunc] = Map[Class[_], ConvertBackFunc](
       classOf[String] -> { contextStringToJsObject(_, _) },
       classOf[Bedrag] -> { contextBedragToJsObject(_, _) },
       classOf[Percentage] -> { contextPercentageToJsObject(_, _) },
@@ -46,11 +46,11 @@ object DefaultJsonConversion extends JsonConversionsProvider {
   }
 
   object JsonToFactConversionMap {
-    def jsonToFactConversionMap: Map[String, ConvertToFunc] = Map[String, ConvertToFunc](
-      "String" -> { stringFunct(_, _) },
-      "org.scalarules.finance.nl.Bedrag" -> { bedragFunct(_, _) },
-      "org.scalarules.finance.nl.Percentage" -> { percentageFunct(_, _) },
-      "BigDecimal" -> { bigDecimalFunct(_, _) }
+    val jsonToFactConversionMap: Map[String, ConvertToFunc] = Map[String, ConvertToFunc](
+      classOf[String].getTypeName -> { stringFunct(_, _) },
+      classOf[Bedrag].getTypeName -> { bedragFunct(_, _) },
+      classOf[Percentage].getTypeName -> { percentageFunct(_, _) },
+      classOf[BigDecimal].getTypeName -> { bigDecimalFunct(_, _) }
     )
 
     private def stringFunct(fact: Fact[Any], factValue: JsValue): JsResult[String] = factValue match {
