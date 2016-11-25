@@ -11,7 +11,6 @@ import scala.reflect.ClassTag
 
 // scalastyle:off public.methods.have.type
 
-@Singleton
 class JarsController @Inject() (jarLoaderService: JarLoaderService) extends Controller {
 
   def listConfiguration = Action(

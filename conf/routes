@@ -1,9 +1,13 @@
+# REST routes for webserviceable derivations
 
+POST /api/run/group/all                                                     controllers.RestController.runAll
 
+# Rule-Viewer routes
 
 GET /api/derivations                                                        controllers.DerivationsController.list
 GET /api/derivations/:id                                                    controllers.DerivationsController.byId(id)
 GET /api/glossaries                                                         controllers.GlossariesController.list
+GET /api/glossaries/mergedGlossaries                                        controllers.GlossariesController.mergedGlossaries
 GET /api/glossaries/:id                                                     controllers.GlossariesController.byId(id)
 GET /api/sources/:id                                                        controllers.SourcesController.sourcesFor(id)
 GET /api/jars                                                               controllers.JarsController.list
