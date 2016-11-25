@@ -2,11 +2,8 @@ package services
 
 import javax.inject.{Inject, Singleton}
 
-import controllers.conversion.ConvertToFunc
-import controllers.conversion.{DefaultJsonConversion, JsonConversionsProvider}
-import org.scalarules.engine._
+import controllers.conversion._
 import play.api.Configuration
-import play.api.libs.json.JsObject
 
 @Singleton
 class JsonConversionMapsService @Inject()(configuration: Configuration, jarLoaderService: JarLoaderService) {
@@ -20,7 +17,7 @@ class JsonConversionMapsService @Inject()(configuration: Configuration, jarLoade
       case (_, map: JsonConversionsProvider) => map.jsonToFactConversions
     }
 
-    override def contextToJsonConversions: Map[Class[_], (Fact[Any], Any) => JsObject] = DefaultJsonConversion.contextToJsonConversions ++ jsonConversionMaps.flatMap{
+    override def contextToJsonConversions: Map[Class[_], ConvertBackFunc] = DefaultJsonConversion.contextToJsonConversions ++ jsonConversionMaps.flatMap{
       case (_, map: JsonConversionsProvider) => map.contextToJsonConversions
     }
   }
