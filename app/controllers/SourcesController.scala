@@ -4,7 +4,7 @@ import java.io.{ByteArrayOutputStream, OutputStreamWriter, Writer}
 import javax.inject._
 
 import akka.util.ByteString
-import org.scalarules.dsl.nl.grammar.Berekening
+import nl.rabobank.rules.dsl.nl.grammar.Berekening
 import play.api.http.HttpEntity
 import play.api.mvc._
 import play.api.{Configuration, Environment}

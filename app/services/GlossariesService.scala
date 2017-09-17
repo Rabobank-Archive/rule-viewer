@@ -2,7 +2,7 @@ package services
 
 import javax.inject.{Inject, Singleton}
 
-import org.scalarules.utils.Glossary
+import nl.rabobank.rules.dsl.core.glossaries.Glossary
 import play.api.Configuration
 
 @Singleton
