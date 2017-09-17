@@ -6,10 +6,10 @@
 useGpg := false
 
 lazy val commonSettings = Seq(
-  organization := "org.scala-rules",
-  organizationHomepage := Some(url("https://github.com/scala-rules")),
-  homepage := Some(url("https://github.com/scala-rules/rule-viewer")),
-  version := "0.0.6-SNAPSHOT",
+  organization := "nl.rabobank.rules",
+  organizationHomepage := Some(url("https://github.com/rabobank-nederland")),
+  homepage := Some(url("https://github.com/rabobank-nederland/rule-viewer")),
+  version := "0.1.0-SNAPSHOT",
   scalaVersion := "2.11.8",
   scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature", "-Xlint", "-Xfatal-warnings")
 ) ++ staticAnalysisSettings ++ publishSettings
@@ -21,7 +21,7 @@ lazy val ruleViewer = (project in file("."))
   .settings(commonSettings: _*)
   .settings(
     name := "rule-viewer",
-    description := "Scala Rules Rule Viewer",
+    description := "Rabo Rules Rule Viewer",
     libraryDependencies ++= dependencies
   )
   .enablePlugins(PlayScala, UniversalDeployPlugin)
@@ -29,14 +29,14 @@ lazy val ruleViewer = (project in file("."))
 
 // *** Dependencies ***
 
-lazy val scalaRulesVersion = "0.5.1"
+lazy val raboRulesVersion = "0.6.0"
 lazy val scalaTestVersion = "2.2.5"
 lazy val jodaTimeVersion = "2.4"
 lazy val jodaConvertVersion = "1.8"
 
 lazy val dependencies = Seq(
-  "org.scala-rules" %% "rule-engine" % scalaRulesVersion,
-  "org.scala-rules" %% "rule-rest" % "0.0.8",
+  "nl.rabobank.rules" %% "rule-engine" % raboRulesVersion,
+  "nl.rabobank.rules" %% "rule-rest" % "0.1.0",
   "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.7.2",
   "com.fasterxml.jackson.jaxrs" % "jackson-jaxrs-json-provider" % "2.7.3",
   "joda-time" % "joda-time" % jodaTimeVersion,
@@ -115,8 +115,8 @@ lazy val pom =
     </developer>
   </developers>
   <scm>
-    <connection>scm:git:git@github.com:scala-rules/rule-viewer.git</connection>
-    <developerConnection>scm:git:git@github.com:scala-rules/rule-viewer.git</developerConnection>
-    <url>git@github.com:scala-rules/rule-viewer.git</url>
+    <connection>scm:git:git@github.com:rabobank-nederland/rule-viewer.git</connection>
+    <developerConnection>scm:git:git@github.com:rabobank-nederland/rule-viewer.git</developerConnection>
+    <url>git@github.com:rabobank-nederland/rule-viewer.git</url>
   </scm>
   

@@ -1,5 +1,5 @@
 <scalastyle>
-    <name>ScalaRules test configuration</name>
+    <name>RaboRules test configuration</name>
 
     <check level="warning" class="org.scalastyle.file.FileLengthChecker" enabled="true">
         <parameters>

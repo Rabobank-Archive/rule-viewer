@@ -1,10 +1,10 @@
-package org.scalarules.example
+package nl.rabobank.rules.example
 
-import org.scalarules.dsl.nl.grammar._
-import org.scalarules.finance.nl._
+import nl.rabobank.rules.dsl.nl.grammar._
+import nl.rabobank.rules.finance.nl._
 
-import org.scalarules.example.ExampleGlossary._
-import org.scalarules.dsl.ext.ListDerivationHelper._
+import nl.rabobank.rules.example.ExampleGlossary._
+import nl.rabobank.rules.dsl.ext.ListDerivationHelper._
 
 class ExampleDerivation extends Berekening (
 
