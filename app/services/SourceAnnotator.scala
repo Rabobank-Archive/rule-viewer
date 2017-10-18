@@ -2,9 +2,9 @@ package services
 
 import java.io.Writer
 
-import nl.rabobank.rules.derivations.Derivation
-import nl.rabobank.rules.dsl.nl.grammar.Berekening
-import nl.rabobank.rules.utils.{FileSourcePosition, SourcePosition}
+import nl.rabobank.oss.rules.derivations.Derivation
+import nl.rabobank.oss.rules.dsl.nl.grammar.Berekening
+import nl.rabobank.oss.rules.utils.{FileSourcePosition, SourcePosition}
 
 import scala.annotation.tailrec
 import scala.io.Source

@@ -3,7 +3,7 @@ package services
 import javax.inject.{Inject, Singleton}
 
 import models.graph.Graph
-import nl.rabobank.rules.dsl.nl.grammar.Berekening
+import nl.rabobank.oss.rules.dsl.nl.grammar.Berekening
 import play.api.Configuration
 
 @Singleton

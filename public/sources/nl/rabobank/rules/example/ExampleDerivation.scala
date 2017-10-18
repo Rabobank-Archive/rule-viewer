@@ -1,10 +1,10 @@
-package nl.rabobank.rules.example
+package nl.rabobank.oss.rules.example
 
-import nl.rabobank.rules.dsl.nl.grammar._
-import nl.rabobank.rules.finance.nl._
+import nl.rabobank.oss.rules.dsl.nl.grammar._
+import nl.rabobank.oss.rules.finance.nl._
 
-import nl.rabobank.rules.example.ExampleGlossary._
-import nl.rabobank.rules.dsl.ext.ListDerivationHelper._
+import nl.rabobank.oss.rules.example.ExampleGlossary._
+import nl.rabobank.oss.rules.dsl.ext.ListDerivationHelper._
 
 class ExampleDerivation extends Berekening (
 

@@ -1,10 +1,10 @@
 package services
 
 import models.graph.{Graph, GraphEdge, GraphNode}
-import nl.rabobank.rules.derivations.DerivationTools._
-import nl.rabobank.rules.derivations.{DefaultDerivation, SubRunDerivation}
-import nl.rabobank.rules.dsl.nl.grammar.Berekening
-import nl.rabobank.rules.facts.Fact
+import nl.rabobank.oss.rules.derivations.DerivationTools._
+import nl.rabobank.oss.rules.derivations.{DefaultDerivation, SubRunDerivation}
+import nl.rabobank.oss.rules.dsl.nl.grammar.Berekening
+import nl.rabobank.oss.rules.facts.Fact
 
 object DerivationsToGraphModel {
 

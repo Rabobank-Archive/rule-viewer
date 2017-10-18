@@ -2,7 +2,7 @@ package controllers
 
 import javax.inject._
 
-import nl.rabobank.rules.facts.Fact
+import nl.rabobank.oss.rules.facts.Fact
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import play.api.mvc._
