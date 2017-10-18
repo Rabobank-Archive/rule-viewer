@@ -4,8 +4,8 @@ import java.net.{URL, URLClassLoader}
 import java.util.jar.{JarEntry, JarFile}
 import javax.inject.{Inject, Singleton}
 
-import nl.rabobank.rules.dsl.core.glossaries.Glossary
-import nl.rabobank.rules.dsl.nl.grammar.Berekening
+import nl.rabobank.oss.rules.dsl.core.glossaries.Glossary
+import nl.rabobank.oss.rules.dsl.nl.grammar.Berekening
 import play.api.Configuration
 
 import scala.collection.JavaConverters._

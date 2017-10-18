@@ -6,10 +6,10 @@
 useGpg := false
 
 lazy val commonSettings = Seq(
-  organization := "nl.rabobank.rules",
+  organization := "nl.rabobank.oss.rules",
   organizationHomepage := Some(url("https://github.com/rabobank-nederland")),
   homepage := Some(url("https://github.com/rabobank-nederland/rule-viewer")),
-  version := "0.1.0-SNAPSHOT",
+  version := "0.1.1-SNAPSHOT",
   scalaVersion := "2.11.8",
   scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature", "-Xlint", "-Xfatal-warnings")
 ) ++ staticAnalysisSettings ++ publishSettings
@@ -35,8 +35,8 @@ lazy val jodaTimeVersion = "2.4"
 lazy val jodaConvertVersion = "1.8"
 
 lazy val dependencies = Seq(
-  "nl.rabobank.rules" %% "rule-engine" % raboRulesVersion,
-  "nl.rabobank.rules" %% "rule-rest" % "0.1.0",
+  "nl.rabobank.oss.rules" %% "rule-engine" % raboRulesVersion,
+  "nl.rabobank.oss.rules" %% "rule-rest" % "0.1.0",
   "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.7.2",
   "com.fasterxml.jackson.jaxrs" % "jackson-jaxrs-json-provider" % "2.7.3",
   "joda-time" % "joda-time" % jodaTimeVersion,
