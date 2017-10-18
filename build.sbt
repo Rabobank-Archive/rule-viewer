@@ -9,7 +9,7 @@ lazy val commonSettings = Seq(
   organization := "nl.rabobank.oss.rules",
   organizationHomepage := Some(url("https://github.com/rabobank-nederland")),
   homepage := Some(url("https://github.com/rabobank-nederland/rule-viewer")),
-  version := "0.1.0-SNAPSHOT",
+  version := "0.1.0",
   scalaVersion := "2.11.8",
   scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature", "-Xlint", "-Xfatal-warnings")
 ) ++ staticAnalysisSettings ++ publishSettings
